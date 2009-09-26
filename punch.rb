@@ -22,6 +22,11 @@ class Task
 
 end
 
+error do
+  @message = 'whoops! ' + "request.env['sinatra.error'].message"
+  haml :fail
+end
+
 DataMapper.auto_upgrade!
 
 helpers do
@@ -66,7 +71,7 @@ post '/s' do
   if @task.save
     redirect '/'
   else
-    haml :fail
+    raise CustomError, 'could not save to the database!'
   end
 end
 
@@ -75,7 +80,7 @@ get '/e/:id' do
   if end_task(params[:id])
     redirect '/'
   else
-    haml :fail
+    raise CustomError, 'could not delete from the database!'
   end
 end
 
@@ -83,7 +88,9 @@ end
 get '/clear' do
   @tasks = Task.all
   @tasks.each do |t|
-    t.destroy
+    if !t.destroy
+      raise CustomError, 'could not delete from the database!'
+    end
   end
   redirect '/'
 end
