@@ -22,7 +22,7 @@ class Task
 
 end
 
-DataMapper.auto_upgrade!
+DataMapper.auto_migrate!
 
 helpers do
   def end_task(id)
@@ -70,6 +70,6 @@ end
 
 # style
 get '/stylesheets/style.css' do
-  header 'Content-Type' => 'text/css; charset=utf-8'
+  headers 'Content-Type' => 'text/css; charset=utf-8'
   sass :styles
 end
