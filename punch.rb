@@ -23,13 +23,6 @@ class Task
 
 end
 
-class User
-  include DataMapper::Resource
-  property :id, Serial
-  property :email, String, :length => 255
-
-end
-
 error do
   @message = 'whoops! ' + "request.env['sinatra.error'].message"
   haml :fail
