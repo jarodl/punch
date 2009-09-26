@@ -79,6 +79,15 @@ get '/e/:id' do
   end
 end
 
+# clear
+get '/clear' do
+  @tasks = Task.all
+  @tasks.each do |t|
+    t.destroy
+  end
+  redirect '/'
+end
+
 # style
 get '/stylesheets/style.css' do
   headers 'Content-Type' => 'text/css; charset=utf-8'
