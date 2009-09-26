@@ -33,15 +33,26 @@ helpers do
       @last_task.save
     end
   end
+
+  def total_time(tasks)
+    total = 0.0
+    @tasks.each do |t|
+      if t.is_completed?
+        total += t.time_worked
+      end
+    end
+    total
+  end
 end
 
 # index
 get '/' do
   @tasks = Task.all(:order => [ :created_at.desc ])
-  unless @tasks.nil?
-    haml :index
-  else
+  @total = total_time(@tasks)
+  if @tasks.empty?
     haml :new
+  else
+    haml :index
   end
 end
 

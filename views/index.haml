@@ -1,11 +1,19 @@
 = haml(:new, :layout => false)
 
-%table
-  - @tasks.each do |t|
-    %tr
-      %td= t.desc
-      - if !t.ended_at.nil?
-        %td= t.time_worked
-      %td
-        - if t.ended_at.nil?
-          %a{:href => "/e/#{t.id}"} stop
+#box
+  %table
+    %th Description
+    %th Hours
+    - @tasks.each do |t|
+      %tr
+        %td= t.desc
+        - if !t.ended_at.nil?
+          %td.center= "%.2f" % (t.time_worked)
+        %td.center
+          - if t.ended_at.nil?
+            %a{:href => "/e/#{t.id}"}
+              %img{:src => "/images/stop.png"}
+    %td
+      %p
+        %strong Total time worked:
+    %td.center= "%.2f" % @total

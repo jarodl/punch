@@ -1,3 +1,5 @@
+%h1 Punch
+
 %form{ :action => "/s", :method => "post", "accept-charset" => "utf-8"}
-  %input{ :type => "text", :value => "what are ya workin on?", :name => "desc" }
-  %input{ :type => "submit", :value => "start task" }
+  %input{ :id => "text", :type => "text", :value => "what are ya workin on?", :name => "desc" }
+  %input{ :id => "button", :type => "submit", :value => "start task" }
