@@ -1,5 +1,6 @@
 require 'sinatra'
 require 'datamapper'
+require 'json'
 
 DataMapper::setup(:default, ENV['DATABASE_URL'] || 'sqlite3://punch.db')
 
@@ -22,6 +23,13 @@ class Task
 
 end
 
+class User
+  include DataMapper::Resource
+  property :id, Serial
+  property :email, String, :length => 255
+
+end
+
 error do
   @message = 'whoops! ' + "request.env['sinatra.error'].message"
   haml :fail
@@ -30,6 +38,7 @@ end
 DataMapper.auto_upgrade!
 
 helpers do
+
   def end_task(id)
     @last_task = Task.get(id)
 
@@ -48,6 +57,7 @@ helpers do
     end
     total
   end
+
 end
 
 # index
@@ -59,6 +69,11 @@ get '/' do
   else
     haml :index
   end
+end
+
+get '/list' do
+  @tasks = Task.all(:order => [ :created_at.desc ])
+  @tasks.inspect
 end
 
 # create
