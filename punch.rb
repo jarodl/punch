@@ -22,7 +22,7 @@ class Task
 
 end
 
-DataMapper.auto_migrate!
+DataMapper.auto_upgrade!
 
 helpers do
   def end_task(id)
