@@ -85,12 +85,13 @@ end
 
 # create
 post '/s' do
-  unless Task.last.nil? or Task.last.is_completed?
-    end_task(Task.last.id)
-  end
   
   user = User.get(session[:userid])
-  @task = Task.create(:desc => params['desc'], :user => user)
+  unless user.done_working?
+    end_task(user.last_task)
+  end
+
+  @task = user.tasks.create(:desc => params['desc'], :user => user)
   if @task.save
     redirect '/'
   else

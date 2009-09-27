@@ -38,6 +38,14 @@ class User
     return user
   end
 
+  def done_working?
+    tasks.last.is_completed? || tasks.empty?
+  end
+
+  def last_task
+    tasks.last.id
+  end
+
 end
 
 DataMapper.auto_migrate!
