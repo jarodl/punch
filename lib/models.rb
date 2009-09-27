@@ -21,6 +21,8 @@ class Task
     worked = hours + (minutes/60.0)
   end
 
+  default_scope(:default).update(:order => [:created_at])
+
 end
 
 class User
@@ -49,8 +51,16 @@ class User
     tasks.last.id
   end
 
+  def total_time
+    total = 0.0
+    tasks.each do |t|
+      if t.is_completed?
+        total += t.time_worked
+      end
+    end
+    total
+  end
+
 end
 
 DataMapper.auto_migrate!
-
-

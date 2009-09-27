@@ -1,10 +1,18 @@
 require 'sinatra'
-require 'models'
 require 'json'
+require 'lib/models'
 require 'net/http'
 require 'net/https'
 
 enable :sessions
+
+configure :development do
+  set :address, 'http://localhost:4567'
+end
+
+configure :production do
+  set :address, 'http://punch.heroku.com'
+end
 
 helpers do
 
@@ -17,16 +25,74 @@ helpers do
     end
   end
 
-  def total_time(tasks)
-    total = 0.0
-    @tasks.each do |t|
-      if t.is_completed?
-        total += t.time_worked
-      end
-    end
-    total
-  end
+end
 
+get '/' do
+  if session[:userid].nil?
+    haml :login
+  else
+    user = User.get(session[:userid])
+    @tasks = user.tasks.reverse
+    @total = user.total_time
+    if @tasks.empty?
+      haml :new
+    else
+      haml :index
+    end
+  end
+end
+
+post '/login' do
+  openid_user = get_user(params[:token])
+  user = User.find(openid_user[:identifier])
+  if user.new_record?
+    user.update_attributes(:email => openid_user[:email])
+  end
+  session[:userid] = user.id
+  if session[:userid]
+    redirect '/'
+  else
+    raise LoginFailedError, 'Could not log in, please try again'
+  end
+end
+
+get '/logout' do
+  session[:userid] = nil
+  redirect '/'
+end
+
+# create
+post '/s' do
+  user = User.get(session[:userid])
+  end_task(user.last_task) unless user.done_working?
+
+  @task = user.tasks.create(:desc => params['desc'], :user => user)
+  if @task.save
+    redirect '/'
+  else
+    raise RuntimeError, 'I could not save to the database.'
+  end
+end
+
+# stop 
+get '/e/:id' do
+  if end_task(params[:id])
+    redirect '/'
+  else
+    raise RuntimeError, 'I could not delete from the database.'
+  end
+end
+
+# clear
+get '/clear' do
+  Task.all.destroy!
+  redirect '/'
+end
+
+# style
+get '/stylesheets/style.css' do
+  headers 'Content-Type' => 'text/css; charset=utf-8'
+  sass :styles
 end
 
 def get_user(token)
@@ -44,78 +110,4 @@ def get_user(token)
   else
     return nil
   end
-end
-
-# index
-get '/' do
-  if session[:userid].nil?
-    haml :login
-  else
-    user = User.get(session[:userid])
-    @tasks = user.tasks.sort { |a, b| b.created_at <=> a.created_at }
-    @total = total_time(@tasks)
-    if @tasks.empty?
-      haml :new
-    else
-      haml :index
-    end
-  end
-end
-
-post '/login' do
-  openid_user = get_user(params[:token])
-  user = User.find(openid_user[:identifier])
-  if user.new_record?
-    user.update_attributes(:email => openid_user[:email])
-  end
-  session[:userid] = user.id
-  redirect '/'
-end
-
-get '/logout' do
-  session[:userid] = nil
-  redirect '/'
-end
-
-get '/list' do
-  user = User.get(session[:userid])
-  @tasks = user.tasks
-  @tasks.inspect
-end
-
-# create
-post '/s' do
-  
-  user = User.get(session[:userid])
-  unless user.done_working?
-    end_task(user.last_task)
-  end
-
-  @task = user.tasks.create(:desc => params['desc'], :user => user)
-  if @task.save
-    redirect '/'
-  else
-    'error'
-  end
-end
-
-# stop 
-get '/e/:id' do
-  if end_task(params[:id])
-    redirect '/'
-  else
-     'error'
-  end
-end
-
-# clear
-get '/clear' do
-  Task.all.destroy!
-  redirect '/'
-end
-
-# style
-get '/stylesheets/style.css' do
-  headers 'Content-Type' => 'text/css; charset=utf-8'
-  sass :styles
 end

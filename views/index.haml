@@ -7,10 +7,10 @@
     - @tasks.each do |t|
       %tr
         %td= t.desc
-        - if !t.ended_at.nil?
+        - if t.is_completed?
           %td.center= "%.2f" % t.time_worked
-        %td.center
-          - if t.ended_at.nil?
+        - else
+          %td.center
             %a{:href => "/e/#{t.id}"}
               %img{:src => "/images/stop.png"}
     %td
