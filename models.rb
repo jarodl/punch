@@ -39,7 +39,10 @@ class User
   end
 
   def done_working?
-    tasks.last.is_completed? || tasks.empty?
+    if tasks.empty?
+      return true
+    end
+    tasks.last.is_completed?
   end
 
   def last_task
