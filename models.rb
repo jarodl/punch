@@ -1,5 +1,7 @@
 require 'datamapper'
 
+DataMapper::setup(:default, ENV['DATABASE_URL'] || 'sqlite3://punch.db')
+
 class Task
   include DataMapper::Resource
   property :id, Serial
@@ -38,7 +40,4 @@ class User
 
 end
 
-DataMapper::setup(:default, ENV['DATABASE_URL'] || 'sqlite3://punch.db')
 DataMapper.auto_migrate!
-
-
