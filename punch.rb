@@ -32,9 +32,9 @@ get '/' do
     haml :login
   else
     user = User.get(session[:userid])
-    @tasks = user.tasks.reverse
+    @tasks = user.tasks.reverse unless user.tasks.nil?
     @total = user.total_time
-    if @tasks.empty?
+    if @tasks.empty? or @tasks.nil?
       haml :new
     else
       haml :index
