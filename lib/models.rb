@@ -41,5 +41,3 @@ class User
 end
 
 DataMapper.auto_upgrade!
-
-

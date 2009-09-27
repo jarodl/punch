@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'models'
+require 'lib/models'
 require 'json'
 require 'net/http'
 require 'net/https'
@@ -52,7 +52,7 @@ get '/' do
     haml :login
   else
     user = User.get(session[:userid])
-    @tasks = user.tasks.sort { |a, b| a.created_at <=> b.created_at }
+    @tasks = user.tasks.sort { |a, b| b.created_at <=> a.created_at }
     @total = total_time(@tasks)
     if @tasks.empty?
       haml :new
