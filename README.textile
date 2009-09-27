@@ -2,7 +2,4 @@ h1. Punch
 
 p. Punch is a simple application for managing hours that you work.
 
-p. This expanded from something "Blake
-Mizerany":http://github.com/bmizerany, "Mark
-Sands":http://github.com/marksands, and "I":http://github.com/jluebbert were
-working on.
+p. This expanded from something "Blake Mizerany":http://github.com/bmizerany, "Mark Sands":http://github.com/marksands, and "I":http://github.com/jluebbert were working on.
