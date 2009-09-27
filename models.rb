@@ -40,4 +40,6 @@ class User
 
 end
 
-DataMapper.auto_migrate!
+DataMapper.auto_update!
+
+
