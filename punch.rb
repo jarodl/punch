@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'lib/models'
+require 'models'
 require 'json'
 require 'net/http'
 require 'net/https'
