@@ -109,12 +109,7 @@ end
 
 # clear
 get '/clear' do
-  @tasks = Task.all
-  @tasks.each do |t|
-    if !t.destroy
-      'error'
-    end
-  end
+  Task.all.destroy!
   redirect '/'
 end
 
