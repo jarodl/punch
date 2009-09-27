@@ -62,5 +62,3 @@ class User
   end
 
 end
-
-DataMapper.auto_migrate!
