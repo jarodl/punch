@@ -8,7 +8,7 @@
       %tr
         %td= t.desc
         - if !t.ended_at.nil?
-          %td.center= t.time_worked
+          %td.center= "%.2f" % t.time_worked
         %td.center
           - if t.ended_at.nil?
             %a{:href => "/e/#{t.id}"}
